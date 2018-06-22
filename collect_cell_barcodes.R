@@ -9,6 +9,6 @@ pArgs <- OptionParser( usage = "%prog input_reads_file input_ncells output_barco
 args <- parse_args( pArgs, positional_arguments = TRUE )
 
 data = read.table(file=args$args[1])
-Ncells = read.table(file=args$args[2])[1,1]
+Ncells = as.numeric(args$args[2])
 barcodes = data$V2[1:Ncells]
 write.table(as.data.frame(barcodes), file=args$args[3], col.names=FALSE, row.names=FALSE,quote=FALSE)
