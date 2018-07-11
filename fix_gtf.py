@@ -20,7 +20,7 @@ if __name__ == '__main__':
     for input_file in args.input:
         prefix = None
         if ninputs > 1:
-            os.path.basename(input_file)
+            prefix = os.path.basename(input_file)
             dot_index = prefix.rfind('.')
             prefix = prefix[0:dot_index]
         with open(input_file, 'r') as reader:
