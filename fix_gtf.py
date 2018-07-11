@@ -65,4 +65,4 @@ if __name__ == '__main__':
                 else:  # comment
                     writer.write(line)
                 writer.write('\n')
-        writer.close()
+    writer.close()
