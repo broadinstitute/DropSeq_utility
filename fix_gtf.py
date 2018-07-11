@@ -43,9 +43,15 @@ if __name__ == '__main__':
                             key_vals[key] = value
                     # use gene_id for gene_name and transcript_id for transcript_name
                     if key_vals.get('gene_name') is None:
-                        key_vals['gene_name'] = key_vals['gene_id']
+                        gene_id = key_vals.get('gene_id')
+                        if gene_id is None:
+                            continue
+                        key_vals['gene_name'] = gene_id
                     if key_vals.get('transcript_name') is None:
-                        key_vals['transcript_name'] = key_vals['transcript_id']
+                        transcript_id = key_vals.get('transcript_id')
+                        if transcript_id is None:
+                            continue
+                        key_vals['transcript_name'] = transcript_id
                     if prefix is not None:
                         values[0] = prefix + '_' + values[0]
                     writer.write('\t'.join(values[0:8]))
