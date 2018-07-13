@@ -9,18 +9,24 @@ if __name__ == '__main__':
     SEMICOLON = re.compile(r'\s*;\s*')
     KEYVALUE = re.compile(r'(\s+|\s*=\s*)')
 
-    parser = argparse.ArgumentParser(description='Fix gene and transcript names in a GTF file')
+    parser = argparse.ArgumentParser(
+        description='Fix gene and transcript names in a GTF file and optionally add a genome prefix.')
     parser.add_argument('--output', help='Output GTF file', required=True)
+    parser.add_argument('--prefix', help='Comma delimitted genome prefixes')
     parser.add_argument('input', help='Input GTF file', nargs='+')
     args = parser.parse_args()
     ninputs = len(args.input)
     output_file = args.output
+    prefix_list = None
+    if args.prefix is not None:
+        prefix_list = args.prefix.split(',')
 
     writer = open(output_file, 'w')
-    for input_file in args.input:
+    for gtf_file_index in args.input:
         prefix = None
-        if ninputs > 1:
-            prefix = os.path.basename(input_file)
+        input_file = args.input[gtf_file_index]
+        if ninputs > 1 and prefix_list is not None:
+            prefix = os.path.basename(prefix_list[gtf_file_index])
             dot_index = prefix.rfind('.')
             prefix = prefix[0:dot_index]
         with open(input_file, 'r') as reader:
