@@ -27,8 +27,9 @@ find_elbow <- function(a)
   x = c(1:length(a))
   a <- c(0,a)
   x <- c(0,x)
-  x <- x[1:5000]
-  a <- a[1:5000]
+  end <- min(5000, length(a))
+  x <- x[1:end]
+  a <- a[1:end]
 
   dist <- c()
   z = x[length(x)]
@@ -62,11 +63,13 @@ plotNumCellBarcodes <- function(cellBCCountsFile, cellBCCollapsedCountsFile, str
 	cumB=cumB/cumB[length(cumB)]
 	
 	numCells = find_elbow(cum)
-#	print(numCells)
-  numCellsFound = NULL	
+
+
+  	numCellsFound = NULL
 	
 	pdf(str_cum_plot,width=10,height=10)
 	if (is.null(xlimit)==F) {
+		xlimit[2] = min(xlimit[2], dim(cell_barcodes)[1])
 		plot(1:length(cum), cum, type='l', col="blue", xlab="cell barcodes sorted by number of reads [descending]", ylab="cumulative fraction of reads", xlim=range(xlimit))
 		points(1:length(cumB), cumB, type='l', col="green")
 		points(c(numCells,numCells),c(0,1),type='l',col="black")
