@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 
-import re
-import collections
 import argparse
-import os
+import collections
+import re
 
 if __name__ == '__main__':
     SEMICOLON = re.compile(r'\s*;\s*')
@@ -15,20 +14,18 @@ if __name__ == '__main__':
     parser.add_argument('--prefix', help='Comma delimitted genome prefixes')
     parser.add_argument('input', help='Input GTF file', nargs='+')
     args = parser.parse_args()
-    ninputs = len(args.input)
+    gtf_files = args.input
     output_file = args.output
+
     prefix_list = None
-    if args.prefix is not None:
+    if args.prefix is not None and len(gtf_files) > 1:
         prefix_list = args.prefix.split(',')
 
     writer = open(output_file, 'w')
-    for gtf_file_index in args.input:
-        prefix = None
-        input_file = args.input[gtf_file_index]
-        if ninputs > 1 and prefix_list is not None:
-            prefix = os.path.basename(prefix_list[gtf_file_index])
-            dot_index = prefix.rfind('.')
-            prefix = prefix[0:dot_index]
+    for gtf_file_index in range(len(gtf_files)):
+        prefix = prefix_list[gtf_file_index] if prefix_list is not None else None
+        input_file = gtf_files[gtf_file_index]
+
         with open(input_file, 'r') as reader:
             for line in reader:
                 if not line.startswith('#'):
@@ -53,11 +50,17 @@ if __name__ == '__main__':
                         if gene_id is None:
                             continue
                         key_vals['gene_name'] = gene_id
+                    if key_vals.get('gene_id') is None:
+                        key_vals['gene_id'] = key_vals.get('gene_name')
+
                     if key_vals.get('transcript_name') is None:
                         transcript_id = key_vals.get('transcript_id')
                         if transcript_id is None:
                             continue
                         key_vals['transcript_name'] = transcript_id
+                    if key_vals.get('transcript_id') is None:
+                        key_vals['transcript_id'] = key_vals.get('transcript_name')
+
                     if prefix is not None:
                         values[0] = prefix + '_' + values[0]
                     writer.write('\t'.join(values[0:8]))
